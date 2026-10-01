@@ -1,0 +1,4 @@
+interface:
+  display_name: "龙虎榜短线分析"
+  short_description: "每日获取沪深非ST龙虎榜并评估资金强度与短线观察价值"
+  default_prompt: "Use $analyze-longhu to fetch and analyze today's Shanghai and Shenzhen non-ST Dragon-Tiger List."
