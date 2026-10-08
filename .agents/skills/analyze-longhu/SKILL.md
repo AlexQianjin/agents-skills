@@ -1,6 +1,6 @@
 ---
 name: analyze-longhu
-description: Fetch and analyze the latest daily A-share Dragon-Tiger List from Tonghuashun for Shanghai and Shenzhen non-ST stocks, then publish the dated priority-observation table to the configured Notion page. Use when the user asks for today's or a specified trading day's 龙虎榜, capital-flow ranking, short-term trading candidates, net-buy analysis, turnover analysis, or a repeatable daily 龙虎榜 review.
+description: Fetch and analyze the latest daily A-share Dragon-Tiger List from Tonghuashun for Shanghai and Shenzhen non-ST stocks, then publish priority-observation rows to a date-sorted Notion database table. Use when the user asks for today's or a specified trading day's 龙虎榜, capital-flow ranking, short-term trading candidates, net-buy analysis, turnover analysis, or a repeatable daily 龙虎榜 review.
 ---
 
 # Analyze Longhu
@@ -26,7 +26,7 @@ Produce a date-verified, data-driven review of Shanghai and Shenzhen non-ST stoc
 6. If Browser is unavailable, run `scripts/extract_longhu.ps1`. The script fetches the public page and returns structured JSON.
 7. Apply the filtering and ranking rules below.
 8. Present the result using the required output format.
-9. Publish the dated `优先观察` table to the configured Notion page using the workflow below.
+9. Publish the `优先观察` rows to the configured Notion database using the workflow below.
 
 ## Filtering
 
@@ -101,19 +101,9 @@ Never say that any stock is certain to rise or directly instruct the user to buy
 
 ## Notion Publishing
 
-After completing the analysis, publish the latest `优先观察` table to the top of the existing Notion page:
+After completing the analysis, publish every `优先观察` candidate as one row in the configured Notion database table. Read [references/notion-publishing.md](references/notion-publishing.md) before any Notion read or write.
 
-- Page title: `longhubang`
-- Page ID: `3ec7f65b-2405-8004-b6e0-e7861386755e`
-- Page URL: `https://app.notion.com/p/3ec7f65b24058004b6e0e7861386755e`
+Use the exact verified trading date, not the execution date. Treat trading date plus stock code as the logical unique key: update matching rows instead of creating duplicates. The table view is sorted by `交易日期` descending; do not simulate ordering by rewriting page content or relying on row creation order.
 
-Before writing, fetch the page and preserve all existing content. Add a dated section at the very beginning of the page using this structure:
-
-1. Heading: `龙虎榜优先观察 — YYYY-MM-DD`, using the exact verified trading date rather than the execution date.
-2. A table with: stock name, code, price change, listed transaction amount, net buy amount, net-buy ratio, and concise rationale.
-3. A source link to `https://data.10jqka.com.cn/market/longhu/`.
-
-Keep the newest trading date at the top. If a section for the same trading date already exists, update that section in place instead of creating a duplicate. Never replace, delete, or reorder older dated sections except as needed to keep the newest section first.
-
-Use the connected Notion tools rather than browser UI when available. Fetch the page again after writing and verify that the date and every priority-observation row were saved. If Notion is unavailable, disconnected, read-only, or the write fails, report that the analysis succeeded but publishing did not; do not retry the same failed write more than once.
+Use connected Notion tools rather than browser UI when available. After writing, query the database again and verify the date and every priority-observation row. If Notion is unavailable, disconnected, read-only, or a write fails, report that analysis succeeded but publication did not; do not retry the same failed write more than once.
 
